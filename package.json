@@ -1,0 +1,36 @@
+{
+  "name": "obs-chat-voice",
+  "version": "1.0.0",
+  "description": "OBS addon that reads chat messages and responds with voice using ElevenLabs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js",
+    "test:obs": "node test-obs-connection.js",
+    "test:twitch": "node test-twitch-connection.js",
+    "test:voice": "node test-elevenlabs.js",
+    "test:ai": "node test-openai.js",
+    "test:all": "node test-all.js"
+  },
+  "keywords": [
+    "obs",
+    "streamelements",
+    "twitch",
+    "chat",
+    "voice",
+    "elevenlabs",
+    "streaming"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1",
+    "elevenlabs-node": "^1.2.0",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2",
+    "obs-websocket-js": "^5.0.3",
+    "socket.io": "^4.7.2",
+    "tmi.js": "^1.8.5"
+  }
+}
