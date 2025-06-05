@@ -20,7 +20,7 @@ async function testOBSConnection() {
   
   try {
     // Connect to OBS
-    await obs.connect(`ws://${config.obs.host}:${config.obs.port}`, config.obs.password);
+    await obs.connect(`ws://${config.obs.host}:${config.obs.port}`, { password: config.obs.password });
     
     console.log('\nConnection successful!');
     
@@ -40,11 +40,11 @@ async function testOBSConnection() {
       console.log(`- ${scene.sceneName}`);
     });
     
-    // List available sources
-    const sources = await obs.call('GetSourcesList');
-    console.log('\nAvailable Sources:');
-    sources.sources.forEach(source => {
-      console.log(`- ${source.name} (${source.typeId})`);
+    // List available inputs (sources)
+    const inputs = await obs.call('GetInputList');
+    console.log('\nAvailable Inputs:');
+    inputs.inputs.forEach(input => {
+      console.log(`- ${input.inputName} (${input.inputKind})`);
     });
     
     console.log('\nAll tests passed! OBS connection is working correctly.');

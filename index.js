@@ -47,7 +47,7 @@ let lastPlayedTime = 0;
 // Connect to OBS
 async function connectToOBS() {
   try {
-    await obs.connect(`ws://${config.obs.host}:${config.obs.port}`, config.obs.password);
+    await obs.connect(`ws://${config.obs.host}:${config.obs.port}`, { password: config.obs.password });
     console.log('Connected to OBS');
     return true;
   } catch (error) {
@@ -59,35 +59,37 @@ async function connectToOBS() {
 // Play audio in OBS
 async function playAudioInOBS(audioPath) {
   try {
-    // Create a media source if it doesn't exist
-    const sources = await obs.call('GetSourcesList');
-    const mediaSourceExists = sources.sources.some(source => source.name === 'ChatVoiceAudio');
+    // Create a media source if it doesn't exist (OBS WebSocket 5.x uses inputs)
+    const inputs = await obs.call('GetInputList');
+    const mediaSourceExists = inputs.inputs.some(input => input.inputName === 'ChatVoiceAudio');
     
     if (!mediaSourceExists) {
-      await obs.call('CreateSource', {
-        sourceName: 'ChatVoiceAudio',
-        sourceKind: 'ffmpeg_source',
+      await obs.call('CreateInput', {
         sceneName: config.obs.scene,
-        sourceSettings: {
+        inputName: 'ChatVoiceAudio',
+        inputKind: 'ffmpeg_source',
+        inputSettings: {
           local_file: audioPath,
           looping: false
-        }
+        },
+        sceneItemEnabled: true
       });
     } else {
       // Update the media source with the new audio file
-      await obs.call('SetSourceSettings', {
-        sourceName: 'ChatVoiceAudio',
-        sourceSettings: {
+      await obs.call('SetInputSettings', {
+        inputName: 'ChatVoiceAudio',
+        inputSettings: {
           local_file: audioPath,
           looping: false
-        }
+        },
+        overlay: false
       });
     }
     
     // Play the media
-    await obs.call('PlayPauseMedia', {
-      sourceName: 'ChatVoiceAudio',
-      playPause: true
+    await obs.call('TriggerMediaInputAction', {
+      inputName: 'ChatVoiceAudio',
+      mediaAction: 'OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART'
     });
     
     console.log('Playing audio in OBS');
